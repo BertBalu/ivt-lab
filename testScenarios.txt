@@ -1,0 +1,4 @@
+1) Primary empty, but try firing with that --> fires with secondary
+2-3) After primary secondary fires (and reverse)
+4) First time primary is fired
+5) If failure don't try fire the other one

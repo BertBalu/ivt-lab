@@ -46,4 +46,70 @@ public class GT4500Test {
     verify(primary, times(1)).fire(2);
     verify(secondary, times(1)).fire(1);
   }
+
+  @Test
+  public void fireTorpedo_Alternate_Success() {
+    when(primary.fire(1)).thenReturn(true);
+    when(secondary.fire(1)).thenReturn(true);
+
+    ship.fireTorpedo(FiringMode.SINGLE);
+    ship.fireTorpedo(FiringMode.SINGLE);
+
+    verify(primary, times(1)).fire(1);
+    verify(secondary, times(1)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_EmptyPrimary_Success() {
+    when(primary.isEmpty()).thenReturn(true);
+    when(secondary.fire(1)).thenReturn(true);
+
+    ship.fireTorpedo(FiringMode.SINGLE);
+
+    verify(secondary, times(1)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_EmptySecondary_Success() {
+    when(secondary.isEmpty()).thenReturn(true);
+    when(primary.fire(1)).thenReturn(true);
+    when(secondary.fire(1)).thenReturn(true);
+
+    ship.fireTorpedo(FiringMode.SINGLE);
+    ship.fireTorpedo(FiringMode.SINGLE);
+
+    verify(primary, times(2)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_FirstPrimary_Success() {
+    when(primary.fire(1)).thenReturn(true);
+    when(secondary.fire(1)).thenReturn(true);
+
+    ship.fireTorpedo(FiringMode.SINGLE);
+
+    verify(primary, times(1)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_FailureDontRetry_Success() {
+    when(primary.fire(1)).thenReturn(false);
+    when(secondary.fire(1)).thenReturn(true);
+
+    ship.fireTorpedo(FiringMode.SINGLE);
+
+    verify(primary, times(1)).fire(1);
+    verify(secondary, times(0)).fire(1);
+  }
+
+  @Test
+  public void fireTorpedo_MultiFaile_Success() {
+    when(primary.isEmpty()).thenReturn(false);
+    when(secondary.isEmpty()).thenReturn(true);
+
+    ship.fireTorpedo(FiringMode.ALL);
+
+    verify(primary, times(0)).fire(1);
+    verify(secondary, times(0)).fire(1);
+  }
 }
